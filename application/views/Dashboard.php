@@ -175,15 +175,15 @@
                                         if($list->type == 'ToDo')
                                             $bg = 'bg-yellow';
                                     ?>
-                                    <div class="timeline-item">
+                                    <div class="timeline-item" id="cardbox<?= $list->id;?>">
                                         <div class="timeline-item-marker">
-                                            <div class="timeline-item-marker-text"><?php echo date('d M', strtotime($list->date));?></div>
+                                            <div class="timeline-item-marker-text" id="carddm<?= $list->id;?>"><?php echo date('d M', strtotime($list->date));?></div>
                                             <div class="timeline-item-marker-indicator <?= $bg; ?>"></div>
                                         </div>
                                         <div class="timeline-item-content">
                                             <?php echo $list->type;?>!
-                                            <a class="fw-bold text-dark" href="#!"><?php echo $list->title;?></a>
-                                            <?php echo $list->description;?>.
+                                            <a class="fw-bold text-dark" id="cardtitle<?= $list->id;?>" onclick="get_event('<?= $list->id;?>')"><?php echo $list->title;?></a>
+                                            <span id="carddescription<?= $list->id;?>"><?php echo $list->description;?></span>.
                                         </div>
                                     </div>
                                     <?php
@@ -450,6 +450,58 @@
     </div>
 </div>
 
+<!-- update modal -->
+<div class="modal fade" id="baModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h6 class="modal-title" id="baLabel1">Update</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" autocomplete="off" id="baForm1">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label for="baTitle" class="form-label">Title</label>
+                            <input type="text" name="baTitle" id="baTitle1" class="form-control form-control-sm" placeholder="Title..." required>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label for="" class="form-label">Date</label>
+                            <input type="date" name="baDate" id="baDate1" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label for="baDescription" class="form-label">Description</label>
+                            <input type="text" name="baDescription" id="baDescription1" class="form-control form-control-sm" placeholder="Description...">
+                        </div>
+                        <div class="col-12 mb-2 box-repeat">
+                            <label class="form-label">Repeat</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="radio" name="baRepeat" value="Once" id="baRepeat11"> <label for="baRepeat11">Once</label>
+                                </div>
+                                <div class="col">
+                                    <input type="radio" name="baRepeat" value="Daily" id="baRepeat12"> <label for="baRepeat12">Daily</label>
+                                </div>
+                                <div class="col">
+                                    <input type="radio" name="baRepeat" value="Monthly" id="baRepeat13"> <label for="baRepeat13">Monthly</label>
+                                </div>
+                                <div class="col">
+                                    <input type="radio" name="baRepeat" value="Yearly" id="baRepeat14"> <label for="baRepeat14">Yearly</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <input type="hidden" name="baid" id="baid1">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="delete_event()">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-purple" id="baSubmitBtn1" style="float: right;">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- calendar script -->
 <script>
     function get_calender(month, year){
@@ -556,6 +608,93 @@
                     // alert(response.message);
                 } else {
                     $('#cdSubmitBtn').html('Re-Submit');
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    });
+</script>
+
+<!-- update event script -->
+<script>
+    function get_event(id){
+        $('#baModal1').modal('toggle');
+        $.ajax({
+            url: '<?php echo base_url('ApiController/GetEventDetails');?>',
+            method: 'post',
+            dataType: 'json',
+            data: {id:id},
+            success: function(data){
+                if(data.status){
+                    $('#baid1').val(data.message.id);
+                    $('#baTitle1').val(data.message.title);
+                    $('#baDescription1').val(data.message.description);
+                    $('#baDate1').val(data.message.date);
+                    $('#baLabel1').html('Update '+data.message.type);
+                    $('#baSubmitBtn1').html('Update');
+                    if(data.message.repeat_this == 'Once'){
+                        $('#baRepeat11').prop('checked', true);
+                    }else if(data.message.repeat_this == 'Daily'){
+                        $('#baRepeat12').prop('checked', true);
+                    }else if(data.message.repeat_this == 'Monthly'){
+                        $('#baRepeat13').prop('checked', true);
+                    }else if(data.message.repeat_this == 'Yearly'){
+                        $('#baRepeat14').prop('checked', true);
+                    }
+                    if(data.message.type == 'Event' || data.message.type == 'ToDo'){
+                        $('.box-repeat').show();
+                    }else if(data.message.type == 'Birthday' || data.message.type == 'Anniversary'){
+                        $('.box-repeat').hide();
+                    }
+                }else{
+                    alert(data.message);
+                    $('#baModal1').modal('toggle');
+                }
+            }
+        });
+    }
+
+    function delete_event(){
+        var id = $("#baid1").val();
+        $.ajax({
+            url: '<?php echo base_url('ApiController/DeleteEvent');?>',
+            method: 'post',
+            dataType: 'json',
+            data: {id:id},
+            success: function(data){
+                if(data.status){
+                    $('#baModal1').modal('toggle');
+                    $("#cardbox"+id).toggle('slow');
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    }
+
+    $('#baForm1').on('submit', function(e){
+        e.preventDefault();
+        $('#baSubmitBtn1').html('Updating <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');
+        $.ajax({
+            url: '<?php echo base_url('ApiController/UpdateBACT')?>',
+            method: 'post',
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(data){
+                var response = (typeof data === 'object') ? data : JSON.parse(data);
+                if(response.status == '1'){
+                    $('#baSubmitBtn1').html('Updated');
+                    $('#baModal1').modal('toggle');
+                    $('#carddm'+response.data.id).html(response.data.dm);
+                    $('#cardtitle'+response.data.id).html(response.data.title);
+                    $('#carddescription'+response.data.id).html(response.data.description);
+                } else {
+                    $('#baSubmitBtn1').html('Re-Update');
                     alert(response.message);
                 }
             },

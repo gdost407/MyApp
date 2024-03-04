@@ -46,11 +46,15 @@
                                     <div class="card-header">Profile Picture</div>
                                     <div class="card-body text-center">
                                         <!-- Profile picture image-->
-                                        <img class="img-account-profile rounded-circle mb-2" src="<?php echo base_url('assets/profile-1.png');?>" alt="">
-                                        <!-- Profile picture help block-->
+                                        <img class="img-account-profile rounded-circle mb-2" src="<?php echo ($this->session->userdata('user_data')->profile == '') ? base_url('assets/profile-1.png') : base_url($this->session->userdata('user_data')->profile);?>" id="preview-image" alt="" style="aspect-ratio: 1; object-fit: cover;">
                                         <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                                         <!-- Profile picture upload button-->
-                                        <button class="btn btn-sm btn-primary" type="button">Upload new image</button>
+                                        
+                                        <form action="" method="post" id="profileForm" enctype='multipart/form-data'>
+                                            <!-- <input type="file" name="profile_image" id="profile_image" accept="image/*" hidden onchange="$('#profileForm').submit();"> -->
+                                            <input type="file" name="profile_image" id="profile_image" accept="image/*" hidden onchange="$('#preview-image').attr('src', window.URL.createObjectURL(this.files[0])); $('#profileForm').submit();">
+                                        </form>
+                                        <label class="btn btn-sm btn-primary" for="profile_image" id="profileImageBtn">Upload new image</label>
                                         
                                     </div>
                                 </div>
@@ -203,6 +207,31 @@
                     $('#SubmitBtn2').html('Password Changed!');
                 } else {
                     $('#SubmitBtn2').html('Re-Submit');
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    });
+
+    $('#profileForm').on('submit', function(e){
+        e.preventDefault();
+        $('#profileImageBtn').html('Uploading image <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');
+        $.ajax({
+            url: '<?php echo base_url('ApiController/UpdateProfileImage')?>',
+            method: 'post',
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(data){
+                var response = (typeof data === 'object') ? data : JSON.parse(data);
+                if(response.status == '1'){
+                    $('#profileImageBtn').html('Profile Updated!');
+                } else {
+                    $('#profileImageBtn').html('Re-Upload');
                     alert(response.message);
                 }
             },

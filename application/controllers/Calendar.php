@@ -82,15 +82,15 @@ class Calendar extends CI_Controller {
 			if($list->type == 'ToDo')
 				$bg = 'bg-yellow';
 			
-			$array['timeline'] .= '<div class="timeline-item">
+			$array['timeline'] .= '<div class="timeline-item" id="cardbox'.$list->id.'">
 					<div class="timeline-item-marker">
-						<div class="timeline-item-marker-text">'.date('d M', strtotime($list->date)).'</div>
+						<div class="timeline-item-marker-text" id="carddm'.$list->id.'">'.date('d M', strtotime($list->date)).'</div>
 						<div class="timeline-item-marker-indicator '.$bg.'"></div>
 					</div>
 					<div class="timeline-item-content">
 						'.$list->type.'!
-						<a class="fw-bold text-dark" href="#!">'.$list->title.'</a>
-						'.$list->description.'.
+						<a class="fw-bold text-dark" id="cardtitle'.$list->id.'" onclick="get_event('.$list->id.')">'.$list->title.'</a>
+						<span id="carddescription'.$list->id.'">'.$list->description.'</span>.
 					</div>
 				</div>';
 		}

@@ -68,6 +68,7 @@ class CI_Loader {
     public $email;
     public $form_validation;
     public $session;
+    public $upload;
 
 	// All these are set automatically. Don't mess with them.
 	/**

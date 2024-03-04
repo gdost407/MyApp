@@ -199,6 +199,50 @@ class ApiController extends CI_Controller {
 		$this->output->set_content_type('application/json')->set_output(json_encode($array));
 	}
 
+	public function UpdateProfileImage(){
+		$user_id 	= $this->session->userdata('user_data')->id;
+		if($_FILES['profile_image']['name'] != '' ){					
+			$config['upload_path']= 'assets/Profile';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif|JPG|JPEG|PNG';
+			$config['max_size'] = 5120;
+			$config['file_name'] = md5(date("Ymdhis").$user_id);
+			$this->load->library('upload', $config);
+			$profile = "";
+			if (!$this->upload->do_upload('profile_image')){
+				$error = array('error' => $this->upload->display_errors());
+				$array = array(
+					'status' => false,
+					'message' => $error['error']
+				);
+			}else{
+				$profile = $this->upload->data(); 
+				$imageurl = 'assets/Profile/'.$profile['file_name'];
+				$data = array('profile'	=> $imageurl);
+				$where = array('id' => $user_id);
+				$save = $this->api_model->SaveData('user', $data, $where);
+				if($save){
+					$user_data = $this->api_model->SelectField('user', $where, '*')->row();
+					$this->session->set_userdata('user_data', $user_data);
+					$array = array(
+						'status' => true,
+						'message' => 'Profile updated'
+					);
+				}else{
+					$array = array(
+						'status' => false,
+						'message' => 'Server issue'
+					);
+				}
+			}
+		}else{
+			$array = array(
+				'status' => false,
+				'message' => 'Choose image before upload'
+			);
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($array));
+	}
+
 	public function SaveBACT(){
 		$Title 		= trim($this->input->post('baTitle'));
 		$Date		= trim($this->input->post('baDate'));
@@ -277,7 +321,7 @@ class ApiController extends CI_Controller {
 			$array = array(
 				'status' => '1',
 				'message' => 'Updated details',
-				'data'	=> array('id'=>$id, 'title'=>$Title, 'date'=>date('d', strtotime($Date)), 'month'=>date('F', strtotime($Date)), 'description'=>$Description, )
+				'data'	=> array('id'=>$id, 'title'=>$Title, 'dm'=>date('d M', strtotime($Date)), 'date'=>date('d', strtotime($Date)), 'month'=>date('F', strtotime($Date)), 'description'=>$Description, )
 			);
 		}else{
 			$array = array(
@@ -347,5 +391,71 @@ class ApiController extends CI_Controller {
 		$this->output->set_content_type('application/json')->set_output(json_encode($array));
 	}
 
+	public function GetTransactionDetails(){
+		$id = trim($this->input->post('id'));
+		$where = array('id'=>$id);
+		$getdata = $this->api_model->SelectField('wallet', $where, '*')->row();
+		if($getdata){
+			$array = array(
+				'status' => true,
+				'message' => $getdata
+			);
+		}else{
+			$array = array(
+				'status' => false,
+				'message' => 'Transaction not found'
+			);
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($array));
+	}
 
+	public function UpdateTransaction(){
+		$id			= trim($this->input->post('cdid'));
+		$Date		= trim($this->input->post('cdDate'));
+		$Type		= trim($this->input->post('cdType'));
+		$Bank		= trim($this->input->post('cdBank'));
+		$Amount		= trim($this->input->post('cdAmount'));
+		$Perticular	= trim($this->input->post('cdPerticular'));
+
+		$data = array(
+			'bank'		=> $Bank,
+			'date'		=> $Date,
+			'type'		=> $Type,
+			'amount'	=> $Amount,
+			'perticular'=> $Perticular
+		);
+		$where = array('id'=>$id);
+		$save = $this->api_model->SaveData('wallet', $data, $where);
+		if($save){
+			$array = array(
+				'status' => '1',
+				'message' => 'Updated details',
+				'data'	=> array('id'=>$id, 'date'=>date('d-m-Y', strtotime($Date)), 'amount'=>$Amount, 'perticular'=>$Perticular)
+			);
+		}else{
+			$array = array(
+				'status' => '0',
+				'message' => 'Server issue'
+			);
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($array));
+	}
+
+	public function DeleteTransaction(){
+		$id = trim($this->input->post('id'));
+		$where = array('id'=>$id);
+		$getdata = $this->api_model->DeleteData('wallet', $where, '');
+		if($getdata){
+			$array = array(
+				'status' => true,
+				'message' => 'Transaction deleted'
+			);
+		}else{
+			$array = array(
+				'status' => false,
+				'message' => 'Server issue'
+			);
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($array));
+	}
 }

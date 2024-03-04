@@ -68,6 +68,7 @@ class CI_Controller {
     public $email;
     public $form_validation;
     public $session;
+    public $upload;
 
 	/**
 	 * Reference to the CI singleton

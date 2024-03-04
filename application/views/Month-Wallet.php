@@ -71,7 +71,7 @@
                                         foreach ($bank->transation_list as $list){
                                             $text_color = ($list->type == 'Credit') ? 'text-success' : 'text-danger';
                                         ?>
-                                        <tr>
+                                        <tr id="rowline<?= $list->id;?>" onclick="get_transaction('<?= $list->id;?>')" style="cursor: pointer;">
                                             <td nowrap><?= date('d-m-Y', strtotime($list->date));?></td>
                                             <td><?= $list->perticular;?></td>
                                             <td nowrap class="<?= $text_color;?>"><?= $list->amount;?></td>
@@ -109,203 +109,117 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="baModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title" id="baLabel">Add</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="" method="post" autocomplete="off" id="baForm">
-                        <div class="row">
-                            <div class="col-6 mb-2">
-                                <label for="baTitle" class="form-label">Title</label>
-                                <input type="text" name="baTitle" id="baTitle" class="form-control form-control-sm" placeholder="Title..." required>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <label for="" class="form-label">Date</label>
-                                <input type="date" name="baDate" id="baDate" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <label for="baDescription" class="form-label">Description</label>
-                                <input type="text" name="baDescription" id="baDescription" class="form-control form-control-sm" placeholder="Description...">
-                            </div>
-                            <div class="col-12 mb-2 box-repeat">
-                                <label class="form-label">Repeat</label>
-                                <div class="row">
-                                    <div class="col">
-                                        <input type="radio" name="baRepeat" value="Once" id="baRepeat1"> <label for="baRepeat1">Once</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="radio" name="baRepeat" value="Daily" id="baRepeat2"> <label for="baRepeat2">Daily</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="radio" name="baRepeat" value="Monthly" id="baRepeat3"> <label for="baRepeat3">Monthly</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="radio" name="baRepeat" value="Yearly" id="baRepeat4"> <label for="baRepeat4">Yearly</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 text-end">
-                                <input type="hidden" name="baType" id="baType">
-                                <button type="submit" class="btn btn-sm btn-outline-purple" id="baSubmitBtn">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+<div class="modal fade" id="cdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h6 class="modal-title" id="cdLabel">Update</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="cdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title" id="cdLabel">Add</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+            <div class="modal-body">
                 <form action="" method="post" autocomplete="off" id="cdForm">
-                        <div class="row">
-                            <div class="col-6 mb-2">
-                                <label class="form-label">Transaction</label>
-                                <div class="row">
-                                    <div class="col">
-                                        <input type="radio" name="cdType" value="Credit" id="cdType1"> <label for="cdType1" checked>Credit</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="radio" name="cdType" value="Debit" id="cdType2"> <label for="cdType2">Debit</label>
-                                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                            <label class="form-label">Transaction</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="radio" name="cdType" value="Credit" id="cdType1"> <label for="cdType1" checked>Credit</label>
+                                </div>
+                                <div class="col">
+                                    <input type="radio" name="cdType" value="Debit" id="cdType2"> <label for="cdType2">Debit</label>
                                 </div>
                             </div>
-                            <div class="col-6 mb-2">
-                                <label for="cdDate" class="form-label">Date</label>
-                                <input type="date" name="cdDate" id="cdDate" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <label for="cdBank" class="form-label">Bank</label>
-                                <select type="text" name="cdBank" id="cdBank" class="form-select form-select-sm" required>
-                                    <?php
-                                    $bank = array('Wallet', 'SBI', 'BOI', 'BOM', 'Kotal 811', 'HDFC', 'Axis', 'ICICI');
-                                    for ($i=0; $i < 8; $i++) { 
-                                        echo '<option>'.$bank[$i].'</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <label for="cdAmount" class="form-label">Amount</label>
-                                <input type="tel" name="cdAmount" id="cdAmount" class="form-control form-control-sm" placeholder="Amount..." required>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <label for="cdPerticular" class="form-label">Perticular</label>
-                                <input type="text" name="cdPerticular" id="cdPerticular" class="form-control form-control-sm" placeholder="Perticular..." required>
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-sm btn-outline-purple" id="cdSubmitBtn">Save</button>
-                            </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-6 mb-2">
+                            <label for="cdDate" class="form-label">Date</label>
+                            <input type="date" name="cdDate" id="cdDate" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label for="cdBank" class="form-label">Bank</label>
+                            <select type="text" name="cdBank" id="cdBank" class="form-select form-select-sm" required>
+                                <?php
+                                $bank = array('Wallet', 'SBI', 'BOI', 'BOM', 'Kotal 811', 'HDFC', 'Axis', 'ICICI');
+                                for ($i=0; $i < 8; $i++) { 
+                                    echo '<option>'.$bank[$i].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label for="cdAmount" class="form-label">Amount</label>
+                            <input type="tel" name="cdAmount" id="cdAmount" class="form-control form-control-sm" placeholder="Amount..." required>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label for="cdPerticular" class="form-label">Perticular</label>
+                            <input type="text" name="cdPerticular" id="cdPerticular" class="form-control form-control-sm" placeholder="Perticular..." required>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <input type="hidden" name="cdid" id="cdid">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="delete_transaction()">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-purple" id="cdSubmitBtn" style="float: right;">Update</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-<!-- calendar script -->
+
 <script>
-    function get_calender(month, year){
+    function get_transaction(id){
+        $('#cdModal').modal('toggle');
         $.ajax({
-            url: '<?php echo base_url('Calendar/View');?>',
+            url: '<?php echo base_url('ApiController/GetTransactionDetails');?>',
             method: 'post',
             dataType: 'json',
-            data: {
-                month:month,
-                year:year
-            },
+            data: {id:id},
             success: function(data){
-                $('#calendar-hfour').html(data.hfour);
-                $('#calendar-tbody').html(data.tbody);
-                $('.timeline-xs').html(data.timeline);
-                $('[data-bs-toggle="popover"]').popover({
-                    container: 'body',
-                    html: true
-                });
+                if(data.status){
+                    $('#cdid').val(data.message.id);
+                    $('#cdAmount').val(data.message.amount);
+                    $('#cdPerticular').val(data.message.perticular);
+                    $('#cdDate').val(data.message.date);
+                    $('#cdBank').val(data.message.bank);
+                    $('#cdLabel').html('Update '+data.message.type);
+                    $('#cdSubmitBtn').html('Update');
+                    if(data.message.type == 'Credit'){
+                        $('#cdType1').prop('checked', true);
+                    }else if(data.message.type == 'Debit'){
+                        $('#cdType2').prop('checked', true);
+                    }
+                }else{
+                    alert(data.message);
+                    $('#cdModal').modal('toggle');
+                }
             }
         });
     }
 
-    $(document).on('click', '.eventLink', function(event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        var params = new URLSearchParams(url.split('?')[1]);
-        var open_modal = params.get('m');
-        var date = params.get('d');
-        if(open_modal == 'Event' || open_modal == 'ToDo'){
-            $('#baModal').modal('toggle');
-            $('#baDate').val(date);
-            $('#baType').val(open_modal);
-            $('#baLabel').html('Add '+open_modal);
-            $('#baRepeat4').attr('checked', true);
-            $('.box-repeat').show();
-        }else if(open_modal == 'Birthday' || open_modal == 'Anniversary'){
-            $('#baModal').modal('toggle');
-            $('#baDate').val(date);
-            $('#baType').val(open_modal);
-            $('#baLabel').html('Add '+open_modal);
-            $('#baRepeat4').attr('checked', true);
-            $('.box-repeat').hide();
-        }else if(open_modal == 'Credit' || open_modal == 'Debit'){
-            $('#cdModal').modal('toggle');
-            $('#cdDate').val(date);
-            $('#cdBank').val('Wallet');
-            $('#cdLabel').html('Add '+open_modal);
-            if(open_modal == 'Credit'){
-                $('#cdType1').attr('checked', true);
-            }else{
-                $('#cdType2').attr('checked', true);
-            }
-        }
-        $('[data-bs-toggle="popover"]').popover('hide');
-    });
-</script>
-<!-- save events and credits script -->
-<script>
-    $('#baForm').on('submit', function(e){
-        e.preventDefault();
-        $('#baSubmitBtn').html('Save <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');
+    function delete_transaction(){
+        var id = $("#cdid").val();
         $.ajax({
-            url: '<?php echo base_url('ApiController/SaveBACT')?>',
+            url: '<?php echo base_url('ApiController/DeleteTransaction');?>',
             method: 'post',
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData: false,
+            dataType: 'json',
+            data: {id:id},
             success: function(data){
-                var response = (typeof data === 'object') ? data : JSON.parse(data);
-                if(response.status == '1'){
-                    $('#baSubmitBtn').html('Saved');
-                    $('#baModal').modal('toggle');
-                    $('#baForm')[0].reset();
-                    // alert(response.message);
-                } else {
-                    $('#baSubmitBtn').html('Re-Submit');
-                    alert(response.message);
+                if(data.status){
+                    $('#cdModal').modal('toggle');
+                    $("#rowline"+id).toggle('slow');
+                }else{
+                    alert(data.message);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX request failed:', status, error);
             }
         });
-    });
-
+    }
+    
     $('#cdForm').on('submit', function(e){
         e.preventDefault();
-        $('#cdSubmitBtn').html('Save <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');
+        $('#cdSubmitBtn').html('Updating <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');
         $.ajax({
-            url: '<?php echo base_url('ApiController/SaveCreditDebit')?>',
+            url: '<?php echo base_url('ApiController/UpdateTransaction')?>',
             method: 'post',
             data: new FormData(this),
             contentType: false,
@@ -314,12 +228,12 @@
             success: function(data){
                 var response = (typeof data === 'object') ? data : JSON.parse(data);
                 if(response.status == '1'){
-                    $('#cdSubmitBtn').html('Saved');
+                    $('#cdSubmitBtn').html('Updated');
                     $('#cdModal').modal('toggle');
-                    $('#cdForm')[0].reset();
-                    // alert(response.message);
+                    $('#rowline'+response.data.id).html('<td>'+response.data.date+'</td><td>'+response.data.perticular+'</td><td>'+response.data.amount+'</td>');
+                    $('#carddescription'+response.data.id).html(response.data.description);
                 } else {
-                    $('#cdSubmitBtn').html('Re-Submit');
+                    $('#cdSubmitBtn').html('Re-Update');
                     alert(response.message);
                 }
             },
