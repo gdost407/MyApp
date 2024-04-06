@@ -276,7 +276,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     href="<?= base_url('Transaction/Annualy')?>">Annualy Earnings</a>
                             </nav>
                         </div>
-                        
+                        <a class="nav-link" href="<?= base_url('KitCat')?>">
+                            <div class="nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg></div>
+                            KitCat
+                        </a>
+                        <a class="nav-link" href="<?= base_url('Portfolio')?>">
+                            <div class="nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                            About ASG
+                        </a>
                     </div>
                 </div>
                 <!-- Sidenav Footer-->

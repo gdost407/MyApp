@@ -41,6 +41,18 @@
                 <div class="card-body h-100 p-3">
                     <div class="row row-cols-1 row-cols-md-auto">
                     <?php
+                    if(empty($calendar_list)){
+                        echo '<div class="col-12 col-md-4 col-xl-3 mb-2">
+                        <div class="card h-100 bg-gradient-primary-to-secondary" style="cursor: pointer;">
+                            <div class="card-body">
+                                <h6 class="text-white" style="font-size: 80%;">'.date('F').'</h6> 
+                                <h1 class="text-white" style="font-size: 150%;">'.date('d').'</h1>
+                                <h5 class="text-white">A S G</h5>
+                                <h6 class="text-white" style="font-size: 80%;">Explore more with ASG, add Birthday, Anniversary & many more.</h6>
+                            </div>
+                        </div>
+                    </div>';
+                    }
                     $i = 1;
                     foreach ($calendar_list as $list){
                         if($list->type == 'Birthday')

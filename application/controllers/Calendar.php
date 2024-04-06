@@ -50,7 +50,7 @@ class Calendar extends CI_Controller {
 		// =========================================
 		// get timeline
 		$current_date = $year."-".sprintf('%02d', $mon)."-".$lastDay;;
-    	$query = "SELECT * FROM `calendar` WHERE `user_id`='$user_id' AND
+    	$query = "SELECT * FROM `calendar` WHERE `user_id` IN ('$user_id', 1) AND
 			(
 				(
 					(
@@ -81,8 +81,9 @@ class Calendar extends CI_Controller {
 				$bg = 'bg-blue';
 			if($list->type == 'ToDo')
 				$bg = 'bg-yellow';
-			
-			$array['timeline'] .= '<div class="timeline-item" id="cardbox'.$list->id.'">
+				
+			if($user_id == $list->user_id){
+			    $array['timeline'] .= '<div class="timeline-item" id="cardbox'.$list->id.'">
 					<div class="timeline-item-marker">
 						<div class="timeline-item-marker-text" id="carddm'.$list->id.'">'.date('d M', strtotime($list->date)).'</div>
 						<div class="timeline-item-marker-indicator '.$bg.'"></div>
@@ -93,6 +94,21 @@ class Calendar extends CI_Controller {
 						<span id="carddescription'.$list->id.'">'.$list->description.'</span>.
 					</div>
 				</div>';
+			}else{
+			    $array['timeline'] .= '<div class="timeline-item" id="cardbox'.$list->id.'">
+					<div class="timeline-item-marker">
+						<div class="timeline-item-marker-text" id="carddm'.$list->id.'">'.date('d M', strtotime($list->date)).'</div>
+						<div class="timeline-item-marker-indicator '.$bg.'"></div>
+					</div>
+					<div class="timeline-item-content">
+						'.$list->type.'!
+						<a class="fw-bold text-dark" id="cardtitle'.$list->id.'">'.$list->title.'</a>
+						<span id="carddescription'.$list->id.'">'.$list->description.'</span>.
+					</div>
+				</div>';
+			}
+			
+			
 		}
 		if(empty($upcoming_events)){
 			$array['timeline'] = '<center>

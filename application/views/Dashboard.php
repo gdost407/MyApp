@@ -174,6 +174,7 @@
                                             $bg = 'bg-blue';
                                         if($list->type == 'ToDo')
                                             $bg = 'bg-yellow';
+                                        if($this->session->userdata('user_data')->id == $list->user_id){
                                     ?>
                                     <div class="timeline-item" id="cardbox<?= $list->id;?>">
                                         <div class="timeline-item-marker">
@@ -187,6 +188,21 @@
                                         </div>
                                     </div>
                                     <?php
+                                        }else{
+                                    ?>
+                                    <div class="timeline-item" id="cardbox<?= $list->id;?>">
+                                        <div class="timeline-item-marker">
+                                            <div class="timeline-item-marker-text" id="carddm<?= $list->id;?>"><?php echo date('d M', strtotime($list->date));?></div>
+                                            <div class="timeline-item-marker-indicator <?= $bg; ?>"></div>
+                                        </div>
+                                        <div class="timeline-item-content">
+                                            <?php echo $list->type;?>!
+                                            <a class="fw-bold text-dark" id="cardtitle<?= $list->id;?>"><?php echo $list->title;?></a>
+                                            <span id="carddescription<?= $list->id;?>"><?php echo $list->description;?></span>.
+                                        </div>
+                                    </div>
+                                    <?php
+                                        }
                                     }
                                     if(empty($event_list)){
                                         echo '<center>

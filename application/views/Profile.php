@@ -143,28 +143,94 @@
     </div>
 </div>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCp8LWxhq-nPpEs4msUOj_JX-3HXhFoFF8&libraries=places"></script>
 <script>
-    $(document).ready(function(){
-        getLocation()
-    });
+$(document).ready(function(){
+    // Initialize Google Places Autocomplete
+    var input = document.getElementById('address');
+    var autocomplete = new google.maps.places.Autocomplete(input);
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            alert("Geolocation is not supported by this browser.");
+    // Event listener to handle place selection
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            console.log("Place details not available for input: '" + place.name + "'");
+            return;
         }
+
+        // Extract address components
+        var address = {
+            country: "",
+            state: "",
+            city: "",
+            pincode: "",
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng()
+        };
+        $('.pac-container').css('z-index', '9999');
+        place.address_components.forEach(function(component) {
+            if (component.types.includes('country')) {
+                address.country = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_1')) {
+                address.state = component.long_name;
+            }
+            if (component.types.includes('administrative_area_level_2')) {
+                address.city = component.long_name;
+            }
+            if (component.types.includes('postal_code')) {
+                address.pincode = component.long_name;
+            }
+        });
+
+        // Display address data
+        // $('#country').val(address.country);
+        $('#state').val(address.state);
+        // $('#city').val(address.city);
+        $('#pincode').val(address.pincode);
+        $('#latitude').val(address.latitude);
+        $('#longitude').val(address.longitude);
+        getAddressFromLatLng(address.latitude, address.longitude);
+    });
+});
+</script>
+
+<script>
+    function getCityFromAddress(address) {
+        var city = "";
+        // Loop through address components to find the city
+        address.forEach(function(component) {
+            if (component.types.includes('locality')) {
+                city = component.long_name;
+                return; // Exit loop if city found
+            }
+        });
+        return city;
     }
-
-    function showPosition(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-
-        // Set latitude and longitude values to input fields
-        $('#latitude').val(latitude);
-        $('#longitude').val(longitude);
+    
+    function getAddressFromLatLng(lat, lng) {
+        var geocoder = new google.maps.Geocoder();
+        var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+        
+        geocoder.geocode({'location': latlng}, function(results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    console.log(results[0].formatted_address);
+                    var city = getCityFromAddress(results[0].address_components);
+                    console.log("City:", city);
+                    // Populate input field with city name
+                    $('#city').val(city);
+                } else {
+                    console.log('No results found');
+                }
+            } else {
+                console.log('Geocoder failed due to: ' + status);
+            }
+        });
     }
+</script>
 
+<script>
     $('#Form1').on('submit', function(e){
         e.preventDefault();
         $('#SubmitBtn').html('Updating <div class="spinner-border text-yellow" role="status" style="width: 10px; height: 10px;"></div>');

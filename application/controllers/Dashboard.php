@@ -11,7 +11,7 @@ class Dashboard extends CI_Controller {
 		$current_date = date("Y-m-d");
 		$user_id 	= $this->session->userdata('user_data')->id;
 
-		$query = "SELECT * FROM `calendar` WHERE `user_id`='$user_id' AND (
+		$query = "SELECT * FROM `calendar` WHERE `user_id` IN ('$user_id', 1) AND (
 			(
 				(
 					(
@@ -31,7 +31,7 @@ class Dashboard extends CI_Controller {
 
         // ==========================================
         $current_date = date("Y-m").'-'.date('t', strtotime($current_date));
-    	$query = "SELECT * FROM `calendar` WHERE `user_id`='$user_id' AND (
+    	$query = "SELECT * FROM `calendar` WHERE `user_id` IN ('$user_id', 1) AND (
 				(
 					(
 						(`repeat_this`='Daily')

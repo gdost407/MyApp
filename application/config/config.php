@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $url_details=$_SERVER['HTTP_HOST'];
 $url_details.=str_replace(basename($_SERVER['SCRIPT_NAME']),'',$_SERVER['SCRIPT_NAME']);
-$config['base_url'] ='http://'.$url_details;
+$config['base_url'] ='https://'.$url_details;
 
 /*
 |--------------------------------------------------------------------------
