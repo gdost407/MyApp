@@ -270,10 +270,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     Default
                                     <span class="badge bg-primary-soft text-primary ms-auto">Updated</span>
                                 </a> -->
-                                <a class="nav-link"
-                                    href="<?= base_url('Transaction/Monthly')?>">Monthly Earnings</a>
-                                <a class="nav-link"
-                                    href="<?= base_url('Transaction/Annualy')?>">Annualy Earnings</a>
+                                <a class="nav-link" href="<?= base_url('Transaction/Monthly')?>">Monthly Earnings</a>
+                                <a class="nav-link" href="<?= base_url('Transaction/Annualy')?>">Annualy Earnings</a>
+                                <a class="nav-link" href="<?= base_url('Transaction/AccountBalance')?>">Account Balance</a>
                             </nav>
                         </div>
                         <a class="nav-link" href="<?= base_url('KitCat')?>">

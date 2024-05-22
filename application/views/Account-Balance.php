@@ -10,7 +10,7 @@
                                 class="feather feather-activity">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                             </svg></div>
-                            Transaction List
+                            Account Balance
                     </h1>
                     <div class="page-header-subtitle">Make life simpler and easier with <b>ASG</b> and stay connected with family.</div>
                 </div>
@@ -47,7 +47,7 @@
                         ?>
                         <div class="col-sm-6 col-md-4 mb-2">
                             <div class="h-100">
-                                <div class="card mb-2 <?= $bankbg[$bank->bank];?> p-3" style="min-height: 150px;">
+                                <div class="card mb-2 <?= $bankbg[$bank->bank];?> p-3" style="min-height: 150px;" onclick="$(this).next('.px-2').slideToggle('slow')">
                                     <h6 class="text-white"><?= $bankname[$bank->bank];?></h6>
                                     <h4 class="text-white text-center my-3" style="letter-spacing: 4px;">xxxx xxxx xxxx <?= rand(1111, 9999);?></h4>
                                     <h6 class="text-white">
@@ -57,7 +57,7 @@
                                     <h1 class="text-white text-end mb-0">&#8377; <?= (int)$bank->balance;?>/-</h1>
                                 </div>
                                 <!-- <hr> -->
-                                <div class="px-2">
+                                <div class="px-2" style="display: none;">
                                     <table class="table table-sm table-striped" style="font-size: 12px;">
                                         <thead>
                                             <tr>
