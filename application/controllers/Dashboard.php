@@ -70,7 +70,44 @@ class Dashboard extends CI_Controller {
 		$calendar_count = $this->api_model->SelectField('calendar', $calendar_where, "COUNT(id) AS total_count")->row();
 		$data['calendar_count'] = $calendar_count->total_count;
 
-		$this->load->view('Header');
+		// ========== account balance ================
+		$cdwhere = array('amount'=> "0");
+		$cdamount = $this->api_model->GetData('wallet', "SUM(CASE WHEN type = 'Credit' THEN amount ELSE 0 END) AS total_credit, SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit", '', '', '', '', 1);
+		$data['account_balance'] = $cdamount->total_credit - $cdamount->total_debit;
+
+		// ========== karaz user name ===============
+		$karazwhere = array('amount !=' => '');
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+
+		// ========== perticular type ===============
+		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
+		// ========= perticular wise debit amount sum ===============
+		foreach($perticular_type as $list){
+			$perticular_type_where = array('user_id'=> $user_id, 'perticular_type' => $list->perticular_type);
+			$perticular_type_q = $this->api_model->SelectField('wallet', $perticular_type_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+			$list->amount = $perticular_type_q->total_debit;
+			$list->rgba = rand(0, 180).", ".rand(0, 180).", ".rand(0, 180);
+		}
+		$data['perticular_type'] = $perticular_type;
+
+		// bar graph data
+		$month = array(date("Y-m", strtotime("-5 month")), date("Y-m-d", strtotime("-4 month")), date("Y-m-d", strtotime("-3 month")), date("Y-m-d", strtotime("-2 month")), date("Y-m-d", strtotime("-1 month")), date("Y-m-d"));
+		$bargraph = array();
+		$largeramount = 0;
+		for($i = 0; $i < 6; $i++){
+			$month_where = array('user_id'=> $user_id, 'MONTH(date)' => date('m', strtotime($month[$i])), 'YEAR(date)' => date('Y', strtotime($month[$i])));
+			$month_dq = $this->api_model->SelectField('wallet', $month_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+			// create new object
+			$new_obj = new stdClass();
+			$new_obj->month = date("F", strtotime($month[$i]));
+			$new_obj->amount = $month_dq->total_debit;
+			array_push($bargraph, $new_obj);
+			$largeramount = ($largeramount < $month_dq->total_debit) ? $month_dq->total_debit : $largeramount;
+			$data['largeramount'] = $largeramount;
+		}
+		$data['bargraph'] = $bargraph;
+
+		$this->load->view('Header');	
 		$this->load->view('Dashboard', $data);
 		$this->load->view('Footer');
 	}

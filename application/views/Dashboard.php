@@ -35,6 +35,7 @@
 </header>
 <!-- Main page content-->
 <div class="container-xl px-4 mt-n10">
+    
     <div class="row">
         <div class="col-xxl-12 col-xl-12 mb-4">
             <div class="card h-100">
@@ -221,10 +222,31 @@
             </div>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Bar chart example-->
+            <div class="card mb-4">
+                <div class="card-header">Monthly Expence</div>
+                <div class="card-body">
+                    <div class="chart-bar"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div><canvas id="myBarChart" width="827" height="440" style="display: block; height: 160px; width: 301px;" class="chartjs-render-monitor"></canvas></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <!-- Pie chart example-->
+            <div class="card mb-4">
+                <div class="card-header">Perticular Expence</div>
+                <div class="card-body">
+                    <div class="chart-pie"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div><canvas id="myPieChart" width="827" height="660" style="display: block; height: 240px; width: 301px;" class="chartjs-render-monitor"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Example Colored Cards for Dashboard Demo-->
     <div class="row">
-        <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="col-lg-6 col-xl-3 mb-4">
             <div class="card bg-gradient-orange-to-yellow text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -256,7 +278,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="col-lg-6 col-xl-3 mb-4">
             <div class="card bg-gradient-green-to-teal text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -291,7 +313,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="col-lg-6 col-xl-3 mb-4">
             <div class="card bg-gradient-primary-to-secondary text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -324,13 +346,13 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-lg-6 col-xl-3 mb-4">
-            <div class="card bg-danger text-white h-100">
+        <div class="col-lg-6 col-xl-3 mb-4">
+            <div class="card bg-gradient-purple-to-violet text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="me-3">
-                            <div class="text-white-75 small">Pending Requests</div>
-                            <div class="text-lg fw-bold">17</div>
+                            <div class="text-white-75 small">Account Balance</div>
+                            <div class="text-lg fw-bold">&#8377; <?php echo $account_balance;?></div>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -344,8 +366,7 @@
                 </div>
                 <div class="card-footer d-flex align-items-center justify-content-between small">
                     <a class="text-white stretched-link"
-                        href="">View
-                        Requests</a>
+                        href="<?= base_url('Transaction/AccountBalance')?>">View Balance</a>
                     <div class="text-white"><svg class="svg-inline--fa fa-angle-right"
                             aria-hidden="true" focusable="false" data-prefix="fas"
                             data-icon="angle-right" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -357,7 +378,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
 
@@ -452,9 +473,40 @@
                             <label for="cdAmount" class="form-label">Amount</label>
                             <input type="tel" name="cdAmount" id="cdAmount" class="form-control form-control-sm" placeholder="Amount..." required>
                         </div>
-                        <div class="col-12 mb-2">
+                        <div class="col-6 mb-2">
                             <label for="cdPerticular" class="form-label">Perticular</label>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <input type="search" list="pertypelist" name="cdPerticularType" id="cdPerticularType" class="form-control form-control-sm text-end border-0" value="Other" placeholder="Perticular Type..." oninput="this.value = this.value.replace(/\s/g, '')" required>
+                            <datalist id="pertypelist">
+                                <?php
+                                foreach($perticular_type as $list){
+                                    echo '<option value="'.$list->perticular_type.'">';
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                        <div class="col-12 mb-2">
                             <input type="text" name="cdPerticular" id="cdPerticular" class="form-control form-control-sm" placeholder="Perticular..." required>
+                            
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-check mb-1">
+                                <label class="form-check-label" for="cdKaraz">
+                                    <input class="form-check-input" name="cdKaraz" id="cdKaraz" type="checkbox" value="1" onclick="$('#karaz_user_box').toggle(''); $('#cdKarazuser').val('');">
+                                    <span class="text-primary" style="cursor: pointer;">Karaz</span> Transaction
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-2" style="display: none;" id="karaz_user_box">
+                            <input type="search" list="karazuserlist" name="cdKarazuser" id="cdKarazuser" class="form-control form-control-sm" placeholder="Name of Person">
+                            <datalist id="karazuserlist">
+                                <?php
+                                foreach($karaz_user as $list){
+                                    echo '<option value="'.$list->karaz_user.'">';
+                                }
+                                ?>
+                            </datalist>
                         </div>
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-sm btn-outline-purple" id="cdSubmitBtn">Save</button>
@@ -519,7 +571,7 @@
 </div>
 
 <!-- calendar script -->
-<script>
+<script>    
     function get_calender(month, year){
         $.ajax({
             url: '<?php echo base_url('Calendar/View');?>',
@@ -575,6 +627,7 @@
         $('[data-bs-toggle="popover"]').popover('hide');
     });
 </script>
+
 <!-- save events and credits script -->
 <script>
     $('#baForm').on('submit', function(e){
@@ -718,5 +771,156 @@
                 console.error('AJAX request failed:', status, error);
             }
         });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" crossorigin="anonymous"></script>
+<script>
+    (Chart.defaults.global.defaultFontFamily = "Oleo Script"), 'system-ui';
+    Chart.defaults.global.defaultFontColor = "#858796";
+
+    function number_format(number, decimals, dec_point, thousands_sep) {
+        // *     example: number_format(1234.56, 2, ',', ' ');
+        // *     return: '1 234,56'
+        number = (number + "").replace(",", "").replace(" ", "");
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = typeof thousands_sep === "undefined" ? "," : thousands_sep,
+            dec = typeof dec_point === "undefined" ? "." : dec_point,
+            s = "",
+            toFixedFix = function(n, prec) {
+                var k = Math.pow(10, prec);
+                return "" + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
+        if (s[0].length > 3) {
+            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || "").length < prec) {
+            s[1] = s[1] || "";
+            s[1] += new Array(prec - s[1].length + 1).join("0");
+        }
+        return s.join(dec);
+    }
+
+    // Bar Chart Example
+    var ctx = document.getElementById("myBarChart");
+    var myBarChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: [<?php foreach($bargraph as $list){ echo '"'.$list->month.'",';} ?>],
+            datasets: [{
+                label: "Expence",
+                backgroundColor: "rgba(88, 0, 232, 1)",
+                hoverBackgroundColor: "rgba(88, 0, 210, 0.9)",
+                borderColor: "#4e73df",
+                data: [<?php foreach($bargraph as $list){ echo '"'.$list->amount.'",';} ?>],
+                maxBarThickness: 25
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: "month"
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 6
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: <?= $largeramount;?>,
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, values) {
+                            return "₹ " + number_format(value);
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: "#6e707e",
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: "#dddfeb",
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        var datasetLabel =
+                            chart.datasets[tooltipItem.datasetIndex].label || "";
+                        return datasetLabel + ": ₹ " + number_format(tooltipItem.yLabel);
+                    }
+                }
+            }
+        }
+    });
+</script>
+<script>
+    (Chart.defaults.global.defaultFontFamily = "Oleo Script"), 'system-ui';
+    Chart.defaults.global.defaultFontColor = "#858796";
+
+    // Pie Chart Example
+    var ctx = document.getElementById("myPieChart");
+    var myPieChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: [<?php foreach($perticular_type as $list){ echo '"'.$list->perticular_type.'",';} ?>],
+            datasets: [{
+                data: [<?php foreach($perticular_type as $list){ echo '"'.$list->amount.'",';} ?>],
+                backgroundColor: [<?php foreach($perticular_type as $list){ echo '"rgba('.$list->rgba.', 1)",';} ?>],
+                hoverBackgroundColor: [<?php foreach($perticular_type as $list){ echo '"rgba('.$list->rgba.', 0.8)",';} ?>],
+                hoverBorderColor: "rgba(234, 236, 244, 1)"
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: "#dddfeb",
+                // borderWidth: 1,
+                // xPadding: 15,
+                // yPadding: 15,
+                // displayColors: false,
+                // caretPadding: 10
+            },
+            legend: {
+                display: false
+            },
+            // cutoutPercentage: 80
+        }
     });
 </script>

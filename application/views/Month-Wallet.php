@@ -63,6 +63,7 @@
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Perticular</th>
+                                                <th>Type</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -74,6 +75,7 @@
                                         <tr id="rowline<?= $list->id;?>" onclick="get_transaction('<?= $list->id;?>')" style="cursor: pointer;">
                                             <td nowrap><?= date('d-m-Y', strtotime($list->date));?></td>
                                             <td><?= $list->perticular;?></td>
+                                            <td><?= $list->perticular_type;?></td>
                                             <td nowrap class="<?= $text_color;?>"><?= $list->amount;?></td>
                                         </tr>
                                         <?php
@@ -151,9 +153,39 @@
                             <label for="cdAmount" class="form-label">Amount</label>
                             <input type="tel" name="cdAmount" id="cdAmount" class="form-control form-control-sm" placeholder="Amount..." required>
                         </div>
-                        <div class="col-12 mb-2">
+                        <div class="col-6 mb-2">
                             <label for="cdPerticular" class="form-label">Perticular</label>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <input type="search" list="pertypelist" name="cdPerticularType" id="cdPerticularType" class="form-control form-control-sm text-end border-0" value="Other" placeholder="Perticular Type..." oninput="this.value = this.value.replace(/\s/g, '')" required>
+                            <datalist id="pertypelist">
+                                <?php
+                                foreach($perticular_type as $list){
+                                    echo '<option value="'.$list->perticular_type.'">';
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                        <div class="col-12 mb-2">
                             <input type="text" name="cdPerticular" id="cdPerticular" class="form-control form-control-sm" placeholder="Perticular..." required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-check mb-1">
+                                <label class="form-check-label" for="cdKaraz">
+                                    <input class="form-check-input" name="cdKaraz" id="cdKaraz" type="checkbox" value="1" onclick="$('#karaz_user_box').toggle(''); $('#cdKarazuser').val('');">
+                                    <span class="text-primary" style="cursor: pointer;">Karaz</span> Transaction
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-2" style="display: none;" id="karaz_user_box">
+                            <input type="search" list="karazuserlist" name="cdKarazuser" id="cdKarazuser" class="form-control form-control-sm" placeholder="Name of Person">
+                            <datalist id="karazuserlist">
+                                <?php
+                                foreach($karaz_user as $list){
+                                    echo '<option value="'.$list->karaz_user.'">';
+                                }
+                                ?>
+                            </datalist>
                         </div>
                         <div class="col-12 mt-2">
                             <input type="hidden" name="cdid" id="cdid">
@@ -251,6 +283,7 @@
                     $('#cdid').val(data.message.id);
                     $('#cdAmount').val(data.message.amount);
                     $('#cdPerticular').val(data.message.perticular);
+                    $('#cdPerticularType').val(data.message.perticular_type);
                     $('#cdDate').val(data.message.date);
                     $('#cdBank').val(data.message.bank);
                     $('#cdLabel').html('Update '+data.message.type);
@@ -259,6 +292,15 @@
                         $('#cdType1').prop('checked', true);
                     }else if(data.message.type == 'Debit'){
                         $('#cdType2').prop('checked', true);
+                    }
+                    if(data.message.karaz == '1'){
+                        $('#cdKaraz').prop('checked', true);
+                        $('#karaz_user_box').show();
+                        $('#cdKarazuser').val(data.message.karaz_user);
+                    }else{
+                        $('#cdKaraz').prop('checked', false);
+                        $('#karaz_user_box').hide();
+                        $('#cdKarazuser').val('');
                     }
                 }else{
                     alert(data.message);
@@ -301,7 +343,7 @@
                 if(response.status == '1'){
                     $('#cdSubmitBtn').html('Updated');
                     $('#cdModal').modal('toggle');
-                    $('#rowline'+response.data.id).html('<td>'+response.data.date+'</td><td>'+response.data.perticular+'</td><td>'+response.data.amount+'</td>');
+                    $('#rowline'+response.data.id).html('<td>'+response.data.date+'</td><td>'+response.data.perticular+'</td><td>'+response.data.perticular_type+'</td><td>'+response.data.amount+'</td>');
                     $('#carddescription'+response.data.id).html(response.data.description);
                 } else {
                     $('#cdSubmitBtn').html('Re-Update');

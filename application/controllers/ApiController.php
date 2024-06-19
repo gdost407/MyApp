@@ -351,24 +351,40 @@ class ApiController extends CI_Controller {
 	}
 
 	public function SaveCreditDebit(){
-		$Type		= trim($this->input->post('cdType'));
-		$Date		= trim($this->input->post('cdDate'));
-		$Bank		= trim($this->input->post('cdBank'));
-		$Amount		= trim($this->input->post('cdAmount'));
-		$Perticular	= trim($this->input->post('cdPerticular'));
-		$user_id 	= $this->session->userdata('user_data')->id;
+		$Type			= trim($this->input->post('cdType'));
+		$Date			= trim($this->input->post('cdDate'));
+		$Bank			= trim($this->input->post('cdBank'));
+		$Amount			= trim($this->input->post('cdAmount'));
+		$Perticular		= trim($this->input->post('cdPerticular'));
+		$PerticularType	= trim($this->input->post('cdPerticularType'));
+		$cdKaraz		= $this->input->post('cdKaraz');
+		$cdKarazuser	= trim($this->input->post('cdKarazuser'));
+		$user_id 		= $this->session->userdata('user_data')->id;
 
 		$where = array('bank'=>$Bank, 'date'=>$Date, 'type'=>$Type, 'amount'=>$Amount, 'perticular'=>$Perticular);
 		$exist = $this->api_model->checkExists('wallet', $where);
 		if(!$exist){
 			$data = array(
-				'user_id'	=> $user_id,
-				'bank'		=> $Bank,
-				'date'		=> $Date,
-				'type'		=> $Type,
-				'amount'	=> $Amount,
-				'perticular'=> $Perticular
+				'user_id'		=> $user_id,
+				'bank'			=> $Bank,
+				'date'			=> $Date,
+				'type'			=> $Type,
+				'amount'		=> $Amount,
+				'perticular'	=> $Perticular,
+				'perticular_type' => $PerticularType
 			);
+			if($cdKaraz == 1){
+				if($cdKarazuser != ''){
+					$data['karaz'] 		= $cdKaraz;
+					$data['karaz_user'] = $cdKarazuser;
+				}else{
+					$array = array(
+						'status' => '0',
+						'message' => 'Name of Person required'
+					);
+					goto end;
+				}
+			}
 			$save = $this->api_model->SaveData('wallet', $data);
 			if($save){
 				$array = array(
@@ -387,7 +403,7 @@ class ApiController extends CI_Controller {
 				'message' => 'Already added'
 			);
 		}
-		
+		end:
 		$this->output->set_content_type('application/json')->set_output(json_encode($array));
 	}
 
@@ -410,27 +426,46 @@ class ApiController extends CI_Controller {
 	}
 
 	public function UpdateTransaction(){
-		$id			= trim($this->input->post('cdid'));
-		$Date		= trim($this->input->post('cdDate'));
-		$Type		= trim($this->input->post('cdType'));
-		$Bank		= trim($this->input->post('cdBank'));
-		$Amount		= trim($this->input->post('cdAmount'));
-		$Perticular	= trim($this->input->post('cdPerticular'));
+		$id				= trim($this->input->post('cdid'));
+		$Date			= trim($this->input->post('cdDate'));
+		$Type			= trim($this->input->post('cdType'));
+		$Bank			= trim($this->input->post('cdBank'));
+		$Amount			= trim($this->input->post('cdAmount'));
+		$Perticular		= trim($this->input->post('cdPerticular'));
+		$PerticularType	= trim($this->input->post('cdPerticularType'));
+		$cdKaraz		= $this->input->post('cdKaraz');
+		$cdKarazuser	= trim($this->input->post('cdKarazuser'))?: '';
 
 		$data = array(
-			'bank'		=> $Bank,
-			'date'		=> $Date,
-			'type'		=> $Type,
-			'amount'	=> $Amount,
-			'perticular'=> $Perticular
+			'bank'			=> $Bank,
+			'date'			=> $Date,
+			'type'			=> $Type,
+			'amount'		=> $Amount,
+			'perticular'	=> $Perticular,
+			'perticular_type' => $PerticularType
 		);
+		if($cdKaraz == 1){
+			if($cdKarazuser != ''){
+				$data['karaz'] 		= $cdKaraz;
+				$data['karaz_user'] = $cdKarazuser;
+			}else{
+				$array = array(
+					'status' => '0',
+					'message' => 'Name of Person required'
+				);
+				goto end;
+			}
+		}else{
+			$data['karaz'] 		= 0;
+			$data['karaz_user'] = NULL;
+		}
 		$where = array('id'=>$id);
 		$save = $this->api_model->SaveData('wallet', $data, $where);
 		if($save){
 			$array = array(
 				'status' => '1',
 				'message' => 'Updated details',
-				'data'	=> array('id'=>$id, 'date'=>date('d-m-Y', strtotime($Date)), 'amount'=>$Amount, 'perticular'=>$Perticular)
+				'data'	=> array('id'=>$id, 'date'=>date('d-m-Y', strtotime($Date)), 'amount'=>$Amount, 'perticular'=>$Perticular, 'perticular_type' => $PerticularType)
 			);
 		}else{
 			$array = array(
@@ -438,6 +473,7 @@ class ApiController extends CI_Controller {
 				'message' => 'Server issue'
 			);
 		}
+		end:
 		$this->output->set_content_type('application/json')->set_output(json_encode($array));
 	}
 

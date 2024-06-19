@@ -26,7 +26,7 @@
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </span>
-                        <input class="form-control ps-0 pointer" id="" placeholder="<?= $show_date;?>" readonly onclick="$('#datePick').modal('toggle');">
+                        <input class="form-control ps-0 pointer" id="" placeholder="<?= date('F d,Y');?>" readonly>
                     </div>
                 </div>
             </div>
@@ -63,6 +63,7 @@
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Perticular</th>
+                                                <th>Type</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -74,6 +75,7 @@
                                         <tr id="rowline<?= $list->id;?>" onclick="get_transaction('<?= $list->id;?>')" style="cursor: pointer;">
                                             <td nowrap><?= date('d-m-Y', strtotime($list->date));?></td>
                                             <td><?= $list->perticular;?></td>
+                                            <td><?= $list->perticular_type;?></td>
                                             <td nowrap class="<?= $text_color;?>"><?= $list->amount;?></td>
                                         </tr>
                                         <?php
@@ -151,9 +153,39 @@
                             <label for="cdAmount" class="form-label">Amount</label>
                             <input type="tel" name="cdAmount" id="cdAmount" class="form-control form-control-sm" placeholder="Amount..." required>
                         </div>
-                        <div class="col-12 mb-2">
+                        <div class="col-6 mb-2">
                             <label for="cdPerticular" class="form-label">Perticular</label>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <input type="search" list="pertypelist" name="cdPerticularType" id="cdPerticularType" class="form-control form-control-sm text-end border-0" value="Other" placeholder="Perticular Type..." oninput="this.value = this.value.replace(/\s/g, '')" required>
+                            <datalist id="pertypelist">
+                                <?php
+                                foreach($perticular_type as $list){
+                                    echo '<option value="'.$list->perticular_type.'">';
+                                }
+                                ?>
+                            </datalist>
+                        </div>
+                        <div class="col-12 mb-2">
                             <input type="text" name="cdPerticular" id="cdPerticular" class="form-control form-control-sm" placeholder="Perticular..." required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-check mb-1">
+                                <label class="form-check-label" for="cdKaraz">
+                                    <input class="form-check-input" name="cdKaraz" id="cdKaraz" type="checkbox" value="1" onclick="$('#karaz_user_box').toggle(''); $('#cdKarazuser').val('');">
+                                    <span class="text-primary" style="cursor: pointer;">Karaz</span> Transaction
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-2" style="display: none;" id="karaz_user_box">
+                            <input type="search" list="karazuserlist" name="cdKarazuser" id="cdKarazuser" class="form-control form-control-sm" placeholder="Name of Person">
+                            <datalist id="karazuserlist">
+                                <?php
+                                foreach($karaz_user as $list){
+                                    echo '<option value="'.$list->karaz_user.'">';
+                                }
+                                ?>
+                            </datalist>
                         </div>
                         <div class="col-12 mt-2">
                             <input type="hidden" name="cdid" id="cdid">
@@ -167,78 +199,7 @@
     </div>
 </div>
 
-<!-- date picker -->
-<div class="modal fade" id="datePick" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header py-2">
-                <h6 class="modal-title" id="cdLabel">Pickup Transaction Month</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="get">
-                    <div class="row">
-                        <?php
-                        $yea = date('Y');
-                        for ($i=$yea-3; $i <= $yea; $i++) { 
-                            if($i == $year){
-                                echo '<div class="col mb-2 text-center">
-                                    <label for="y'.$i.'" class="yearclick border border-primary bg-primary text-white rounded-2 px-2 w-75">'.$i.'</label>
-                                    <input type="radio" value="'.$i.'" name="year" id="y'.$i.'" checked hidden>
-                                </div>';
-                            }else{
-                                echo '<div class="col mb-2 text-center">
-                                    <label for="y'.$i.'" class="yearclick border border-primary text-dark rounded-2 px-2 w-75">'.$i.'</label>
-                                    <input type="radio" value="'.$i.'" name="year" id="y'.$i.'" hidden>
-                                </div>';
-                            }
-                        }
-                        ?>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <?php
-                        for ($i=1; $i <= 12; $i++) {
-                            $j = date('M', strtotime($year.'/'.$i.'/1'));
-                            if($i == $month){
-                                echo '<div class="col-3 mb-2 text-center">
-                                    <label for="m'.$i.'" class="monthclick border border-primary bg-primary text-white rounded-2 px-2 w-75">'.$j.'</label>
-                                    <input type="radio" value="'.$i.'" name="month" id="m'.$i.'" checked hidden>
-                                </div>';
-                            }else{
-                                echo '<div class="col-3 mb-2 text-center">
-                                    <label for="m'.$i.'" class="monthclick border border-primary text-dark rounded-2 px-2 w-75">'.$j.'</label>
-                                    <input type="radio" value="'.$i.'" name="month" id="m'.$i.'" hidden>
-                                </div>';
-                            }
-                        }
-                        ?>
-                    </div>
-                    <hr>
-                    <div class="w-100 text-end">
-                        <button class="btn btn-sm btn-purple" type="submit">Search</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $(document).ready(function() {
-        $('input[type=radio][name=year]').change(function() {
-            $('.yearclick').removeClass('bg-primary text-white').addClass('bg-white text-dark');
-            $('label[for="' + $(this).attr('id') + '"]').removeClass('bg-white text-dark').addClass('bg-primary text-white');
-        });
-
-
-        $('input[type=radio][name=month]').change(function() {
-            $('.monthclick').removeClass('bg-primary text-white').addClass('bg-white text-dark');
-            $('label[for="' + $(this).attr('id') + '"]').removeClass('bg-white text-dark').addClass('bg-primary text-white');
-        });
-
-    });
-    
+<script>   
     function get_transaction(id){
         $('#cdModal').modal('toggle');
         $.ajax({
@@ -251,6 +212,7 @@
                     $('#cdid').val(data.message.id);
                     $('#cdAmount').val(data.message.amount);
                     $('#cdPerticular').val(data.message.perticular);
+                    $('#cdPerticularType').val(data.message.perticular_type);
                     $('#cdDate').val(data.message.date);
                     $('#cdBank').val(data.message.bank);
                     $('#cdLabel').html('Update '+data.message.type);
@@ -259,6 +221,15 @@
                         $('#cdType1').prop('checked', true);
                     }else if(data.message.type == 'Debit'){
                         $('#cdType2').prop('checked', true);
+                    }
+                    if(data.message.karaz == '1'){
+                        $('#cdKaraz').prop('checked', true);
+                        $('#karaz_user_box').show();
+                        $('#cdKarazuser').val(data.message.karaz_user);
+                    }else{
+                        $('#cdKaraz').prop('checked', false);
+                        $('#karaz_user_box').hide();
+                        $('#cdKarazuser').val('');
                     }
                 }else{
                     alert(data.message);
@@ -301,7 +272,7 @@
                 if(response.status == '1'){
                     $('#cdSubmitBtn').html('Updated');
                     $('#cdModal').modal('toggle');
-                    $('#rowline'+response.data.id).html('<td>'+response.data.date+'</td><td>'+response.data.perticular+'</td><td>'+response.data.amount+'</td>');
+                    $('#rowline'+response.data.id).html('<td>'+response.data.date+'</td><td>'+response.data.perticular+'</td><td>'+response.data.perticular_type+'</td><td>'+response.data.amount+'</td>');
                     $('#carddescription'+response.data.id).html(response.data.description);
                 } else {
                     $('#cdSubmitBtn').html('Re-Update');

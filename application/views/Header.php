@@ -273,6 +273,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <a class="nav-link" href="<?= base_url('Transaction/Monthly')?>">Monthly Earnings</a>
                                 <a class="nav-link" href="<?= base_url('Transaction/Annualy')?>">Annualy Earnings</a>
                                 <a class="nav-link" href="<?= base_url('Transaction/AccountBalance')?>">Account Balance</a>
+                                <a class="nav-link" href="<?= base_url('Transaction/Perticular')?>">Perticular Ledger</a>
+                                <a class="nav-link" href="<?= base_url('Transaction/KarazHishob')?>">Karaz Hishob</a>
                             </nav>
                         </div>
                         <a class="nav-link" href="<?= base_url('KitCat')?>">
