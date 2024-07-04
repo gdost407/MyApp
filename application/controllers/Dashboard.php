@@ -96,7 +96,7 @@ class Dashboard extends CI_Controller {
 		$largeramount = 0;
 		for($i = 0; $i < 6; $i++){
 			$month_where = array('user_id'=> $user_id, 'MONTH(date)' => date('m', strtotime($month[$i])), 'YEAR(date)' => date('Y', strtotime($month[$i])));
-			$month_dq = $this->api_model->SelectField('wallet', $month_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+			$month_dq = $this->api_model->SelectField('wallet', $month_where, "SUM(CASE WHEN type = 'Debit' AND perticular_type != 'Bank' THEN amount ELSE 0 END) AS total_debit")->row();
 			// create new object
 			$new_obj = new stdClass();
 			$new_obj->month = date("F", strtotime($month[$i]));
