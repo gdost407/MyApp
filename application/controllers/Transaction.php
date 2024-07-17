@@ -34,6 +34,17 @@ class Transaction extends CI_Controller {
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
 
+		// ========== perticular wise amount ===============
+		$whereperamount = array('user_id'=>$user_id, 'perticular_type !=' => 'Bank', 'MONTH(`date`)'=>date('m', strtotime($date)), 'YEAR(`date`)'=>date('Y', strtotime($date)));
+		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", $whereperamount, '', '', '', '');
+		foreach($perticular_type as $list){
+			$perticular_type_where = array('user_id'=> $user_id, 'perticular_type' => $list->perticular_type, 'MONTH(`date`)'=>date('m', strtotime($date)), 'YEAR(`date`)'=>date('Y', strtotime($date)));
+			$perticular_type_q = $this->api_model->SelectField('wallet', $perticular_type_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+			$list->amount = $perticular_type_q->total_debit;
+			$list->rgba = rand(0, 180).", ".rand(0, 180).", ".rand(0, 180);
+		}
+		$data['perticular_amount'] = $perticular_type;
+
 		$this->load->view('Header');
 		$this->load->view('Month-Wallet', $data);
 		$this->load->view('Footer');
@@ -65,6 +76,17 @@ class Transaction extends CI_Controller {
 
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
+
+		// ========== perticular wise amount ===============
+		$whereperamount = array('user_id'=>$user_id, 'perticular_type !=' => 'Bank', 'YEAR(`date`)'=>date('Y', strtotime($date)));
+		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", $whereperamount, '', '', '', '');
+		foreach($perticular_type as $list){
+			$perticular_type_where = array('user_id'=> $user_id, 'perticular_type' => $list->perticular_type, 'YEAR(`date`)'=>date('Y', strtotime($date)));
+			$perticular_type_q = $this->api_model->SelectField('wallet', $perticular_type_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+			$list->amount = $perticular_type_q->total_debit;
+			$list->rgba = rand(0, 180).", ".rand(0, 180).", ".rand(0, 180);
+		}
+		$data['perticular_amount'] = $perticular_type;
 
 		$this->load->view('Header');
 		$this->load->view('Month-Wallet', $data);

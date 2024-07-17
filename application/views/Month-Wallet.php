@@ -40,6 +40,14 @@
             <div class="card h-100">
                 <div class="card-body h-100 p-3">
                     <div class="row">
+                        <div class="col-sm-6 col-md-4 mb-2">
+                        <div class="card mb-4" style="position: sticky; top: 4rem;">
+                            <div class="card-header">Perticular Expence</div>
+                                <div class="card-body">
+                                    <div class="chart-pie"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div><canvas id="myPieChart" width="827" height="660" style="display: block; height: 240px; width: 301px;" class="chartjs-render-monitor"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
                         <?php
                         $bankname = array('Wallet'=>'Wallet Bank', 'SBI'=>'State Bank of India', 'BOI'=>'Bank Of India', 'BOM'=>'Bank Of Maharashtra', 'Kotal 811'=>'Kotal Mahindra Bank', 'HDFC'=>'HDFC Bank', 'Axis'=>'Axis Bank', 'ICICI'=>'ICICI Bank');
                         $bankbg = array('Wallet'=>'bg-gradient-primary-to-secondary', 'SBI'=>'bg-gradient-purple-to-violet', 'BOI'=>'bg-gradient-orange-to-yellow', 'BOM'=>'bg-gradient-orange-to-yellow', 'Kotal 811'=>'bg-gradient-green-to-teal', 'HDFC'=>'bg-gradient-primary-to-secondary', 'Axis'=>'bg-gradient-green-to-teal', 'ICICI'=>'bg-gradient-orange-to-yellow');
@@ -354,5 +362,43 @@
                 console.error('AJAX request failed:', status, error);
             }
         });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" crossorigin="anonymous"></script>
+<script>
+    (Chart.defaults.global.defaultFontFamily = "Oleo Script"), 'system-ui';
+    Chart.defaults.global.defaultFontColor = "#858796";
+
+    // Pie Chart Example
+    var ctx = document.getElementById("myPieChart");
+    var myPieChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: [<?php foreach($perticular_amount as $list){ echo '"'.$list->perticular_type.'",';} ?>],
+            datasets: [{
+                data: [<?php foreach($perticular_amount as $list){ echo '"'.$list->amount.'",';} ?>],
+                backgroundColor: [<?php foreach($perticular_amount as $list){ echo '"rgba('.$list->rgba.', 1)",';} ?>],
+                hoverBackgroundColor: [<?php foreach($perticular_amount as $list){ echo '"rgba('.$list->rgba.', 0.8)",';} ?>],
+                hoverBorderColor: "rgba(234, 236, 244, 1)"
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: "#dddfeb",
+                // borderWidth: 1,
+                // xPadding: 15,
+                // yPadding: 15,
+                // displayColors: false,
+                // caretPadding: 10
+            },
+            legend: {
+                display: true
+            },
+            // cutoutPercentage: 80
+        }
     });
 </script>

@@ -79,8 +79,9 @@ class Dashboard extends CI_Controller {
 		$karazwhere = array('amount !=' => '');
 		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
 
-		// ========== perticular type ===============
-		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
+		// ========== pie chart perticular type ===============
+		$ptypewhere = "`perticular_type`!= 'Bank'";
+		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", $ptypewhere, '', '', '', '');
 		// ========= perticular wise debit amount sum ===============
 		foreach($perticular_type as $list){
 			$perticular_type_where = array('user_id'=> $user_id, 'perticular_type' => $list->perticular_type);
