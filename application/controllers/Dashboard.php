@@ -71,18 +71,18 @@ class Dashboard extends CI_Controller {
 		$data['calendar_count'] = $calendar_count->total_count;
 
 		// ========== account balance ================
-		$cdwhere = array('amount'=> "0");
-		$cdamount = $this->api_model->GetData('wallet', "SUM(CASE WHEN type = 'Credit' THEN amount ELSE 0 END) AS total_credit, SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit", '', '', '', '', 1);
+		$cdwhere = array('user_id'=> $user_id);
+		$cdamount = $this->api_model->GetData('wallet', "SUM(CASE WHEN type = 'Credit' THEN amount ELSE 0 END) AS total_credit, SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit", $cdwhere, '', '', '', 1);
 		$data['account_balance'] = $cdamount->total_credit - $cdamount->total_debit;
 
 		// ========== karaz user name ===============
-		$karazwhere = array('amount !=' => '');
-		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+		$karazwhere = array('amount !=' => '', 'user_id'=> $user_id);
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", $karazwhere, '', '', '', '');
 
 		// ========== pie chart perticular type ===============
-		$ptypewhere = "`perticular_type`!= 'Bank'";
+		$ptypewhere = "`perticular_type`!= 'Bank' AND `user_id` = '$user_id'";
 		$perticular_type = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", $ptypewhere, '', '', '', '');
-		// ========= perticular wise debit amount sum ===============
+		// ========= perticular wise debit amount sum ===============	
 		foreach($perticular_type as $list){
 			$perticular_type_where = array('user_id'=> $user_id, 'perticular_type' => $list->perticular_type);
 			$perticular_type_q = $this->api_model->SelectField('wallet', $perticular_type_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();

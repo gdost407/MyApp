@@ -127,17 +127,19 @@ class ApiController extends CI_Controller {
 		$upincode 	= trim($this->input->post('upincode'));
 		$ulatitude 	= trim($this->input->post('ulatitude'));
 		$ulongitude = trim($this->input->post('ulongitude'));
+		$umonthlimit= trim($this->input->post('umonthlimit'));
 
 		$data = array(
-			'name'		=> ucwords($uname),
-			'mobile'	=> $umobile,
-			'dob'		=> $udob,
-			'address'	=> $uaddress,
-			'state'		=> $ustate,
-			'city'		=> $ucity,
-			'pincode'	=> $upincode,
-			'latitude'	=> $ulatitude,
-			'longitude'	=> $ulongitude,
+			'name'			=> ucwords($uname),
+			'mobile'		=> $umobile,
+			'dob'			=> $udob,
+			'address'		=> $uaddress,
+			'state'			=> $ustate,
+			'city'			=> $ucity,
+			'pincode'		=> $upincode,
+			'latitude'		=> $ulatitude,
+			'longitude'		=> $ulongitude,
+			'month_limit'	=> $umonthlimit,
 		);
 		$where = array('id' => $user_id);
 		$save = $this->api_model->SaveData('user', $data, $where);

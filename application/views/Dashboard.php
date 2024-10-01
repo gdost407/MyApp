@@ -224,6 +224,40 @@
     </div>
     
     <div class="row">
+        <div class="col-12">
+            <!-- expence limit progress bar -->
+            <?php
+            $limit = $this->session->userdata('user_data')->month_limit;
+            $expence = $month_debit;
+            $percent = $percentshow = round(($expence/$limit)*100);
+            // switch case for progress bar color 0-40%, 40-70%, 70-100%, above 100%
+            switch($percent){
+                case 0:
+                    $bg = 'bg-primary';
+                    break;
+                case $percent <= 60:
+                    $bg = 'bg-success';
+                    break;
+                case $percent <= 80:
+                    $bg = 'bg-info';
+                    break;
+                case $percent <= 98:
+                    $bg = 'bg-warning';
+                    break;
+                default:
+                    $bg = 'bg-danger';
+                    $percent = 100;
+                    break;
+            }
+            ?>
+            <div class="card card-progress mb-4">
+                <div class="card-header text-dark">You used <span class="fw-bold"><?= $percentshow; ?></span>% of your Monthly Expense Limit.</div>
+                <!-- <div class="card-body">This is an example of a card with a 100% completed progress bar.</div> -->
+                <div class="progress rounded-0">
+                    <div class="progress-bar <?= $bg; ?>" role="progressbar" style="width: <?= $percent; ?>%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-6">
             <!-- Bar chart example-->
             <div class="card mb-4">

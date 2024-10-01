@@ -28,8 +28,8 @@ class Transaction extends CI_Controller {
 		$data['bank_list'] = $bank_list;
 
 		// ========== karaz user name ===============
-		$karazwhere = array('karaz_user !=' => '');
-		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+		$karazwhere = array('karaz_user !=' => '', 'user_id'=> $user_id);
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", $karazwhere, '', '', '', '');
 
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
@@ -71,8 +71,8 @@ class Transaction extends CI_Controller {
 		$data['bank_list'] = $bank_list;
 
 		// ========== karaz user name ===============
-		$karazwhere = array('karaz_user !=' => '');
-		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+		$karazwhere = array('karaz_user !=' => '', 'user_id'=> $user_id);
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", $karazwhere, '', '', '', '');
 
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
@@ -110,8 +110,8 @@ class Transaction extends CI_Controller {
 		$data['bank_list'] = $bank_list;
 
 		// ========== karaz user name ===============
-		$karazwhere = array('karaz_user !=' => '');
-		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+		$karazwhere = array('karaz_user !=' => '', 'user_id'=> $user_id);
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", $karazwhere, '', '', '', '');
 
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');
@@ -122,7 +122,8 @@ class Transaction extends CI_Controller {
 	}
 
 	public function KarazHishob(){
-		$query = "SELECT DISTINCT(`karaz_user`) FROM `wallet` WHERE `karaz_user` !=''";
+		$user_id 	= $this->session->userdata('user_data')->id;
+		$query = "SELECT DISTINCT(`karaz_user`) FROM `wallet` WHERE `karaz_user` !='' AND `user_id` = $user_id";
 		$result = $this->db->query($query);
 		$karaz_user = $result->result();
 
@@ -198,8 +199,8 @@ class Transaction extends CI_Controller {
 		$data['bank_list'] = $bank_list;
 
 		// ========== karaz user name ===============
-		$karazwhere = array('karaz_user !=' => '');
-		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", '', '', '', '', '');
+		$karazwhere = array('karaz_user !=' => '','user_id'=> $user_id);
+		$data['karaz_user'] = $this->api_model->GetData('wallet', "DISTINCT(karaz_user)", $karazwhere, '', '', '', '');
 
 		// ========== perticular type ===============
 		$data['perticular_type'] = $this->api_model->GetData('wallet', "DISTINCT(perticular_type)", '', '', '', '', '');

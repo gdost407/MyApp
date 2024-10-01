@@ -100,6 +100,10 @@
                                                     <label class="small mb-1" for="pincode">Pincode</label>
                                                     <input class="form-control form-control-sm" required id="pincode" type="tel" placeholder="Enter your pincode" name="upincode" value="<?= $this->session->userdata('user_data')->pincode;?>" maxlength="6">
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <label class="small mb-1" for="monthlimit">Month Expense Limit</label>
+                                                    <input class="form-control form-control-sm" required id="monthlimit" type="tel" placeholder="Enter Expense Limit" name="umonthlimit" value="<?= $this->session->userdata('user_data')->month_limit;?>" maxlength="10">
+                                                </div>
                                             </div>
                                             <!-- Save changes button-->
                                             <input type="hidden" name="ulatitude" id="latitude" value="<?= $this->session->userdata('user_data')->latitude;?>">
