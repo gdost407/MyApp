@@ -228,7 +228,7 @@
             <!-- expence limit progress bar -->
             <?php
             $limit = $this->session->userdata('user_data')->month_limit;
-            $expence = $month_debit;
+            $expence = $expence_month_debit;
             $percent = $percentshow = round(($expence/$limit)*100);
             // switch case for progress bar color 0-40%, 40-70%, 70-100%, above 100%
             switch($percent){

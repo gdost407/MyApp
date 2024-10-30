@@ -52,6 +52,10 @@ class Dashboard extends CI_Controller {
 		$result = $this->db->query($query);
 		$data['month_events'] = $result->result();
 
+		// ========== month expense calculation ============
+		$ex_where = array('user_id'=> $user_id, 'MONTH(date)' => date('m'), 'perticular_type !=' => 'Bank');
+		$month_ex = $this->api_model->SelectField('wallet', $ex_where, "SUM(CASE WHEN type = 'Debit' THEN amount ELSE 0 END) AS total_debit")->row();
+		$data['expence_month_debit'] = $month_ex->total_debit;
 		// ========== credit debit calculation ============
 		$month_where = array('user_id'=> $user_id, 'MONTH(date)' => date('m'));
 		$year_where = array('user_id'=> $user_id, 'YEAR(date)' => date('Y'));
